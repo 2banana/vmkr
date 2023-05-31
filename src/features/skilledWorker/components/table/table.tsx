@@ -4,6 +4,7 @@ import "./Table.css";
 interface TableProps {
   markers: ExportedSequence[];
   onPlay: (data: CallbackProps) => void;
+  id: string;
 }
 
 interface CallbackProps {
@@ -15,7 +16,10 @@ interface CallbackProps {
 const Table = (props: TableProps) => {
   const pairedMarkers = props.markers.map((marker, index) => {
     return (
-      <tr key={index}>
+      <tr
+        key={index}
+        className={`dynamicTables ${props.id === marker.id ? "selected" : ""}`}
+      >
         <td>{`${marker.from.time.toFixed(2)} - ${marker.to.time.toFixed(
           2
         )} `}</td>

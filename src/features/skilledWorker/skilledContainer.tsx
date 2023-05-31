@@ -180,7 +180,7 @@ downloadAttachment(JSON.stringify(exportObj, null, 2), "export.json");
         onMarkerAdded={() => {}}
         onChangeFile={handleFileUpload}
       />
-      <Table markers={sequence} onPlay={handlePlay} />
+      <Table markers={sequence} onPlay={handlePlay} id={seqId} />
       <PlayerController player={getPlayer()} onChange={onPlayerChanged} />
       <SkillController
         selected={{ label: "", value: getSkill() }}
