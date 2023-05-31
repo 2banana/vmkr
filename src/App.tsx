@@ -1,9 +1,10 @@
+import { RouterProvider } from "react-router-dom";
 import "./App.css";
-import { PlayerContainer } from "./features/player/playerContainer";
+import { router } from "./utils/router/router";
 
 const App = () => (
   <div className="app-container">
-    <PlayerContainer />;
+    <RouterProvider router={router} />
   </div>
 );
 

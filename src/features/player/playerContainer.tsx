@@ -13,6 +13,7 @@ import {
   keyTypes,
 } from "./interfaces/interfaces";
 import { downloadAttachment } from "./utils.tsx/downloader";
+import { ExtendedExport } from "../skilledWorker/interfaces";
 
 // no touchy touchy , will breaky breaky  -_-
 
@@ -156,8 +157,14 @@ const PlayerContainer = (): JSX.Element => {
     });
   };
 
-  const handleExports = (): void =>
-    downloadAttachment(JSON.stringify(markers, null, 2), "export.json");
+  const handleExports = (): void => {
+    const exportJson: ExtendedExport = {
+      url: url,
+      json: markers || [],
+    };
+
+    downloadAttachment(JSON.stringify(exportJson, null, 2), "export.json");
+  };
 
   // Key handlers
 

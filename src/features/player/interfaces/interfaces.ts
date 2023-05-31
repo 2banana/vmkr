@@ -8,7 +8,6 @@ interface PlayerProps {
   volume: number;
   fps: number;
   markers: Marker[];
-  
 
   onPlay: () => void;
   onPause: () => void;
@@ -31,6 +30,7 @@ interface ExtendedTimelineRow extends TimelineRow {
 
 interface ExtendedMarker extends Marker {
   type: keyTypes;
+  skill?: string;
 }
 
 export type {
