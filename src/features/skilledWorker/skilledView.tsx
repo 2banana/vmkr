@@ -27,7 +27,7 @@ const SkilledWorkerView = (props: SkilledProps): JSX.Element => {
           "Volume",
           "FullScreen",
          // "AddMarker",
-          "ExportMarkers",
+         // "ExportMarkers",
         ]}
         viewSettings={["Title", "FPS", "Repeat", "StartTime", "Volume"]}
       />

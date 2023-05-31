@@ -1,7 +1,7 @@
 import { ChangeEvent } from "react";
 import { ProgressProps } from "react-video-player-extended";
 import { Marker } from "react-video-player-extended/dist/marker";
-import { ExtendedMarker } from "../player/interfaces/interfaces";
+import { ExtendedMarker, keyTypes } from "../player/interfaces/interfaces";
 
 interface SkilledProps {
   url: string;
@@ -9,7 +9,7 @@ interface SkilledProps {
   volume: number;
   fps: number;
   markers: Marker[];
-  timeStart : number;
+  timeStart: number;
 
   onPlay: () => void;
   onPause: () => void;
@@ -22,7 +22,33 @@ interface SkilledProps {
 
 interface ExtendedExport {
   url: string;
-  json: ExtendedMarker[];
+  json: ExportedSequence[];
 }
 
-export type { SkilledProps, ExtendedExport };
+interface ExportedSequence {
+  id: string;
+  type: keyTypes;
+  skill?: string;
+  player?: PlayerType;
+  status?: StatusType;
+  from: ExtendedMarker;
+  to: ExtendedMarker;
+}
+
+type StatusType = "accepted" | "rejected" | "pending";
+type PlayerType = "rp" | "bp";
+
+interface ModifyingData {
+  status: StatusType;
+  player: PlayerType;
+  skill: string;
+}
+
+export type {
+  SkilledProps,
+  ExtendedExport,
+  ExportedSequence,
+  StatusType,
+  PlayerType,
+  ModifyingData,
+};

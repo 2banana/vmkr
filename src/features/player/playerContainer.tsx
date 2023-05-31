@@ -14,6 +14,7 @@ import {
 } from "./interfaces/interfaces";
 import { downloadAttachment } from "./utils.tsx/downloader";
 import { ExtendedExport } from "../skilledWorker/interfaces";
+import { fortmatExport } from "./utils.tsx/saveFormat";
 
 // no touchy touchy , will breaky breaky  -_-
 
@@ -158,10 +159,7 @@ const PlayerContainer = (): JSX.Element => {
   };
 
   const handleExports = (): void => {
-    const exportJson: ExtendedExport = {
-      url: url,
-      json: markers || [],
-    };
+    const exportJson: ExtendedExport = fortmatExport(url, markers || []);
 
     downloadAttachment(JSON.stringify(exportJson, null, 2), "export.json");
   };

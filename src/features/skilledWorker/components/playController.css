@@ -1,0 +1,4 @@
+.Row.selectedRow {
+  background-color: #3399ff;
+  font-weight: bold;
+}

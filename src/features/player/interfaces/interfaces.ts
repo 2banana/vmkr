@@ -29,8 +29,7 @@ interface ExtendedTimelineRow extends TimelineRow {
 }
 
 interface ExtendedMarker extends Marker {
-  type: keyTypes;
-  skill?: string;
+  type?: keyTypes;
 }
 
 export type {

@@ -2,8 +2,16 @@ import { SkilledWorkerView } from "./skilledView";
 import { ChangeEvent, useEffect, useState } from "react";
 import { ExtendedMarker } from "../player/interfaces/interfaces";
 import { ProgressProps } from "react-video-player-extended";
-import { ExtendedExport } from "./interfaces";
-import { CallbackProps, Table } from "../../components/table";
+import {
+  ExportedSequence,
+  ExtendedExport,
+  ModifyingData,
+  PlayerType,
+} from "./interfaces";
+import { CallbackProps, Table } from "./components/table/table";
+import { DropdownOption, SkillController } from "./components/skillController";
+import { PlayerController } from "./components/playerController";
+import { downloadAttachment } from "../player/utils.tsx/downloader";
 
 const SkilledWorkerContainer = (): JSX.Element => {
   const [url, _setUrl] = useState<string>("");
@@ -12,9 +20,12 @@ const SkilledWorkerContainer = (): JSX.Element => {
   const [video, setVideo] = useState<HTMLVideoElement | null>();
 
   const [markers, setMarkers] = useState<ExtendedMarker[]>();
+  const [sequence, setSeq] = useState<ExportedSequence[]>([]);
 
   const [json, setJson] = useState<ExtendedExport>();
   const [end, setEnd] = useState<number | null>(null);
+
+  const [seqId, setSeqId] = useState<string>("");
 
   const handleOnProgress = (_e: Event, _progress: ProgressProps): void => {};
 
@@ -43,6 +54,7 @@ const SkilledWorkerContainer = (): JSX.Element => {
     }
 
     setEnd(data.end);
+    setSeqId(data.id);
   };
 
   const handleTimeUpdate = () => {
@@ -74,10 +86,82 @@ const SkilledWorkerContainer = (): JSX.Element => {
 
   useEffect(() => {
     if (json) {
-      setMarkers(json.json);
+      const extractedMarkers = json.json.flatMap((item: ExportedSequence) => [
+        {
+          type: item.type,
+          id: item.from.id,
+          time: item.from.time,
+          title: item.from.title,
+        },
+        {
+          type: item.type,
+          id: item.to.id,
+          time: item.to.time,
+          title: item.to.title,
+        },
+      ]);
+
+      setMarkers(extractedMarkers);
+      setSeq(json.json);
       _setUrl(json.url);
     }
   }, [json]);
+
+  const onPlayerChanged = (player: PlayerType) => {
+    setSeq((prevState) => {
+      return [
+        ...prevState.map((item) => {
+          if (item.id === seqId) {
+            return {
+              ...item,
+
+              player: player,
+            };
+          }
+          return item;
+        }),
+      ];
+    });
+  };
+
+  useEffect(() => {
+    console.log(`sequence : ${JSON.stringify(sequence)}`);
+  }, [sequence]);
+
+  const onSkillChanged = (skill: DropdownOption) => {
+    setSeq((prevState) => {
+      return [
+        ...prevState.map((item) => {
+          if (item.id === seqId) {
+            return {
+              ...item,
+              skill: skill.value,
+            };
+          }
+          return item;
+        }),
+      ];
+    });
+  };
+
+  const getPlayer = (): PlayerType | string => {
+    return sequence.find((item) => item.id === seqId)?.player || "";
+  };
+
+  const getSkill = (): string => {
+    return sequence.find((item) => item.id === seqId)?.skill || "";
+  };
+
+  const handleExport = (): void => {
+const exportObj : ExtendedExport = {
+  url : url,
+  json :sequence 
+} 
+
+downloadAttachment(JSON.stringify(exportObj, null, 2), "export.json");
+
+
+  }
 
   return (
     <>
@@ -96,7 +180,17 @@ const SkilledWorkerContainer = (): JSX.Element => {
         onMarkerAdded={() => {}}
         onChangeFile={handleFileUpload}
       />
-      <Table markers={markers || []} onPlay={handlePlay} />
+      <Table markers={sequence} onPlay={handlePlay} />
+      <PlayerController player={getPlayer()} onChange={onPlayerChanged} />
+      <SkillController
+        selected={{ label: "", value: getSkill() }}
+        options={[
+          { label: "Slam", value: "slam" },
+          { label: "Stomp", value: "stomp" },
+        ]}
+        onSelectOption={onSkillChanged}
+      />
+      <button onClick={handleExport} >{'Export'}</button>
     </>
   );
 };
