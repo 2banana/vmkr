@@ -1,0 +1,98 @@
+.scrubber-interface {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* height: 100vh; */
+}
+
+.scrubber-container {
+  width: 500px;
+}
+
+.scrubber-frame {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
+  border: none;
+  background: none;
+  color: #000;
+  cursor: pointer;
+}
+
+.frame-scroll {
+  width: 100%;
+  overflow-x: scroll;
+}
+
+.frame-list {
+  display: flex;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.frame-list li {
+  margin: 0 5px;
+  /* opacity: 0.6; */
+}
+
+.frame-list li.active {
+  opacity: 1;
+}
+
+.frame-list li img {
+  width: 100px;
+  height: 100px;
+}
+
+.frame-scroll::-webkit-scrollbar-corner {
+  background: #161616;
+}
+
+.frame-scroll::-webkit-scrollbar {
+  background: #161616;
+  color: #3399ff;
+}
+.frame-scroll::-webkit-scrollbar-track {
+  position: absolute;
+  top: 100%;
+  margin-top: 5px;
+
+  left: 0;
+  right: 0;
+  height: 15px;
+
+  transform: translateY(-50%);
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    to right,
+    transparent,
+    transparent 5px,
+    white 4px,
+    white 8px
+
+  );
+}
+.frame-scroll::-webkit-scrollbar-thumb {
+  display: none;
+}
+.frame-scroll::-webkit-scrollbar-thumb:hover {
+  background: #3399ff;
+}
+
+ /* Active */
+
+ .active {
+  outline: 5px solid skyblue;
+  outline-offset: -2px;
+}

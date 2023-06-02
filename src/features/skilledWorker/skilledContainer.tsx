@@ -2,12 +2,7 @@ import { SkilledWorkerView } from "./skilledView";
 import { ChangeEvent, useEffect, useState } from "react";
 import { ExtendedMarker } from "../player/interfaces/interfaces";
 import { ProgressProps } from "react-video-player-extended";
-import {
-  ExportedSequence,
-  ExtendedExport,
-  ModifyingData,
-  PlayerType,
-} from "./interfaces";
+import { ExportedSequence, ExtendedExport, PlayerType } from "./interfaces";
 import { CallbackProps, Table } from "./components/table/table";
 import { DropdownOption, SkillController } from "./components/skillController";
 import { PlayerController } from "./components/playerController";
@@ -153,15 +148,13 @@ const SkilledWorkerContainer = (): JSX.Element => {
   };
 
   const handleExport = (): void => {
-const exportObj : ExtendedExport = {
-  url : url,
-  json :sequence 
-} 
+    const exportObj: ExtendedExport = {
+      url: url,
+      json: sequence,
+    };
 
-downloadAttachment(JSON.stringify(exportObj, null, 2), "export.json");
-
-
-  }
+    downloadAttachment(JSON.stringify(exportObj, null, 2), "export.json");
+  };
 
   return (
     <>
@@ -190,7 +183,7 @@ downloadAttachment(JSON.stringify(exportObj, null, 2), "export.json");
         ]}
         onSelectOption={onSkillChanged}
       />
-      <button onClick={handleExport} >{'Export'}</button>
+      <button onClick={handleExport}>{"Export"}</button>
     </>
   );
 };

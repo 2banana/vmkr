@@ -5,6 +5,7 @@ interface TableProps {
   markers: ExportedSequence[];
   onPlay: (data: CallbackProps) => void;
   id: string;
+  renderStatusColumn?: (marker: ExportedSequence) => React.ReactNode;
 }
 
 interface CallbackProps {
@@ -13,7 +14,7 @@ interface CallbackProps {
   id: string;
 }
 
-const Table = (props: TableProps) => {
+const Table = (props: TableProps): JSX.Element => {
   const pairedMarkers = props.markers.map((marker, index) => {
     return (
       <tr
@@ -25,6 +26,7 @@ const Table = (props: TableProps) => {
         )} `}</td>
         <td>{marker.player}</td>
         <td>{marker.skill}</td>
+
         <td>
           <button
             onClick={() =>
@@ -38,6 +40,9 @@ const Table = (props: TableProps) => {
             play
           </button>
         </td>
+        {props.renderStatusColumn && (
+          <td>{props.renderStatusColumn(marker)}</td>
+        )}
       </tr>
     );
   });
@@ -50,6 +55,7 @@ const Table = (props: TableProps) => {
           <th>player</th>
           <th>skill</th>
           <th>go to frame</th>
+          {props.renderStatusColumn && <th>Status</th>}
         </tr>
       </thead>
       <tbody>{pairedMarkers}</tbody>
@@ -59,4 +65,4 @@ const Table = (props: TableProps) => {
 
 export { Table };
 
-export type { CallbackProps };
+export type { CallbackProps, TableProps };

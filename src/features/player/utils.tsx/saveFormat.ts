@@ -23,6 +23,7 @@ const fortmatExport = (url: string, markers: ExtendedMarker[]) => {
     exportJSon.json.push({
       id: getUid(),
       type: identicalType(),
+      status: "pending",
       from: { id: from.id, time: from.time, title: from.title },
       to: { id: to.id, time: to.time, title: to.title },
     });

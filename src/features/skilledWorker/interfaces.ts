@@ -30,7 +30,7 @@ interface ExportedSequence {
   type: keyTypes;
   skill?: string;
   player?: PlayerType;
-  status?: StatusType;
+  status: StatusType;
   from: ExtendedMarker;
   to: ExtendedMarker;
 }
