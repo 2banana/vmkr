@@ -6,7 +6,7 @@
 }
 
 .scrubber-container {
-  width: 500px;
+  width: 720px;
 }
 
 .scrubber-frame {
@@ -51,8 +51,8 @@
 }
 
 .frame-list li img {
-  width: 100px;
-  height: 100px;
+  width: 320px;
+  height: 180px;
 }
 
 .frame-scroll::-webkit-scrollbar-corner {

@@ -10,13 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ffmpeg/core": "^0.11.0",
-    "@ffmpeg/ffmpeg": "^0.11.6",
     "animation-timeline-js": "^2.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.2",
-    "react-video-player-extended": "file:../react-video-player-extended",
+    "react-video-player-extended": "https://github.com/2banana/react-video-player-extended.git",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
@@ -31,7 +29,6 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
     "typescript": "^5.0.2",
-    "vite": "^4.3.2",
-    "vite-plugin-cross-origin-isolation": "^0.1.6"
+    "vite": "^4.3.2"
   }
 }

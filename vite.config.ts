@@ -1,10 +1,9 @@
 import { build, defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
-import crossOriginIsolation from "vite-plugin-cross-origin-isolation";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), crossOriginIsolation()],
+  plugins: [react()],
   optimizeDeps: {
     include: ["react-video-player-extended"],
   },
@@ -12,3 +11,7 @@ export default defineConfig({
     dedupe: ["react", "react-dom"],
   },
 });
+// const absolutePath = path.resolve(
+//   __dirname,
+//   "/home/yux/dev/Mediio/react/react-video-player-extended"
+// );

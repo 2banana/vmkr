@@ -1,100 +1,110 @@
 import { useEffect, useState } from "react";
-import { fetchFile } from "@ffmpeg/ffmpeg";
-import { ProgressComponent } from "./progressIndicator";
 import { Scrubber } from "./Scrubber/scrubber";
-import { ffmpeg } from "../ffmpegWasm/ffmpeg";
+import { Frames } from "./extractResponse";
 
 interface ExtractorProps {
   url: string;
 
-  ClickOnFrame: (totalFrames: number, clickedFrameIndex: number) => void;
-  getCurrentIndex: (frames: number) => number;
+  ClickOnFrame: (adjusted: number) => void;
+  getCurrentMarkerTime: () => number;
+}
+
+interface Dto {
+  url: string;
 }
 
 const VideoFrameExtractor = ({
-  url,
   ClickOnFrame,
-  getCurrentIndex,
+  getCurrentMarkerTime,
 }: ExtractorProps): JSX.Element => {
-  const [ratio, setRatio] = useState<number>(0);
+  const [response, setResponse] = useState<Frames | null>(null);
 
   const [frames, setFrames] = useState<string[]>([]);
-  const [ready, setReady] = useState<boolean>(ffmpeg.isLoaded());
-  const [currentFrameIndex, setFI] = useState<number>(0);
 
-  useEffect(() => {
-    setFI(getCurrentIndex(frames.length));
-  }, [frames]);
+  const [index, setIndex] = useState<number>(0);
 
-  ffmpeg.setProgress((data) => {
-    setRatio(data.ratio);
-  });
+  const onFrameClick = (): void => {
+    if (response) {
+      const durationPerFrame: number = response.duration / response.frames;
+      const playerTime: number = durationPerFrame * (index + 1);
 
-  useEffect(() => {
-    console.log(`Current Index : ${currentFrameIndex}`);
-  }, [currentFrameIndex]);
-
-  useEffect(() => {
-    (async () => {
-      if (!ffmpeg.isLoaded()) {
-        await ffmpeg.load().then(() => handleWarming());
-      }
-    })();
-  }, []);
-
-  const handleWarming = () => {
-    if (ffmpeg.isLoaded()) {
-      setReady(true);
+      const roundedPlayerTime: number = Math.round(playerTime * 1000) / 1000;
+      ClickOnFrame(roundedPlayerTime);
     }
   };
 
+  const getSelectedFrameFromMarker = (): number => {
+    if (response) {
+      const durationPerFrame: number = response.duration / response.frames;
+
+      return Math.ceil(getCurrentMarkerTime() / durationPerFrame);
+    }
+
+    return 0;
+  };
+
   const extractFrames = async () => {
-    ffmpeg.FS(
-      "writeFile",
-      "input.mp4",
-      await fetchFile(`${"http://localhost:5173/" + url}`)
-    );
-    await ffmpeg.run("-i", "input.mp4", "output_%d.jpg");
+    try {
+      const dto: Dto = {
+        url: "https://media.w3.org/2010/05/bunny/trailer.mp4",
+      };
 
-    const files = ffmpeg.FS("readdir", "/");
-    const extractedFrames = files.filter((file) => file.startsWith("output_"));
-    const frameUrls = extractedFrames.map((frame) =>
-      URL.createObjectURL(new Blob([ffmpeg.FS("readFile", frame)]))
-    );
+      const response = await fetch(
+        "http://localhost:3000/frames/extract-frames",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dto),
+        }
+      );
 
-    setFrames(frameUrls);
+      const data = await response.json();
+      setResponse(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const generateImagePaths = (): void => {
+    const imagePaths = [];
+
+    if (response) {
+      for (let i = 1; i < response.frames; i++) {
+        const imagePath = `http://localhost:3000/output/${response.id}/${i}.jpg`;
+        imagePaths.push(imagePath);
+      }
+    }
+
+    setFrames(imagePaths);
   };
 
   useEffect(() => {
-    handleVideoPlay();
-  }, [ready]);
+    response && setIndex(getSelectedFrameFromMarker);
+    generateImagePaths();
+  }, [response]);
 
-  const handleVideoPlay = () => {
-    console.log("running");
+  useEffect(() => {
+    onFrameClick();
+  }, [index]);
+
+  useEffect(() => {
     extractFrames();
-  };
-
-  if (!ready) {
-    return <>{"loading..."}</>;
-  }
+  }, []);
 
   return (
     <div>
-      {frames.length > 0 && (
+      {response && response.frames > 0 && (
         <div>
-          <Scrubber
-            frames={frames}
-            frameIndex={currentFrameIndex}
-            onFrame={(index) => ClickOnFrame(frames.length, index)}
-          />
+          <Scrubber frames={frames} frameIndex={index} onFrame={setIndex} />
         </div>
       )}
-      {frames.length === 0 && (
+      {response && response.frames === 0 && (
         <div>
           <h3>No frames extracted.</h3>
         </div>
       )}
-      {ratio < 1 ? <ProgressComponent ratio={ratio} /> : null}
     </div>
   );
 };

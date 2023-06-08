@@ -8,6 +8,7 @@ interface ScrubberProps {
 }
 
 const Scrubber = ({ frames, frameIndex, onFrame }: ScrubberProps) => {
+ 
   const [currentIndex, setCurrentIndex] = useState(frameIndex);
 
   const contentRef = useRef<HTMLDivElement>(null);
